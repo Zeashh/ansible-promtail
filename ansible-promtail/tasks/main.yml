@@ -1,0 +1,31 @@
+    - name: Create keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+
+    - name: Install repository key
+      ansible.builtin.shell: "wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor > /etc/apt/keyrings/grafana.gpg"
+
+    - name: Add Grafana repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+        state: present
+
+    - name: Install Promtail
+      ansible.builtin.apt:
+        package: promtail
+        update_cache: true
+    
+    - name: Add promtail user to appropriate groups
+      user:
+        name: promtail
+        groups: adm,systemd-journal
+
+    - name: Set Promtail config
+      template:
+        src: config.yml.j2
+        dest: /etc/promtail/config.yml
+        owner: root
+        group: root
+        mode: "0544"
+      notify: Restart Promtail

@@ -1,0 +1,50 @@
+server:
+  disable: true
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+- url: "{{ loki_url }}"
+  basic_auth:
+    username: "{{ loki_user }}"
+    password: "{{ loki_password }}"
+  tenant_id: "{{ tenant_id }}"
+
+scrape_configs:
+- job_name: journal
+  journal:
+    max_age: 12h
+    path: /run/log/journal
+    labels:
+      job: "{{ ansible_hostname }}/journal"
+  relabel_configs:
+      - action: drop
+        source_labels: ["__journal__transport"]
+        regex: "kernel"
+      - source_labels: ["__journal__systemd_unit"]
+        target_label: "unit"
+      - source_labels: ["__journal__hostname"]
+        target_label: "host_name"
+      - source_labels: ["__journal__transport"]
+        target_label: "transport"
+      - source_labels: ["__journal__cmdline"]
+        target_label: "_cmdline"
+      - source_labels: ["__journal_priority"]
+        target_label: "_priority"
+      - source_labels: ["__journal_priority_keyword"]
+        target_label: "priority"
+      - source_labels: ["__journal_syslog_identifier"]
+        target_label: "syslog_identifier"
+      - source_labels: ["__journal_syslog_message_severity"]
+        target_label: "level"
+      - source_labels: ["__journal_syslog_message_facility"]
+        target_label: "syslog_facility"
+- job_name: varlog
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: "{{ ansible_hostname }}/varlogs"
+      host: "{{ ansible_hostname }}"
+      __path__: /var/log/*.log

@@ -1,0 +1,4 @@
+loki_url: https://loki.local.grghomelab.me/loki/api/v1/push
+# loki_user
+# loki_password
+# tenant_id

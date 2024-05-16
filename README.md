@@ -1,3 +1,1 @@
-# ansible-promtail
-
-Short Ansible role for setting up Promtail
+This simple Ansible role can be used to set up [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) on remote servers. By default it sets it up to scrape the journal and `.log` files in `/var/log` and send them to [Loki](https://grafana.com/oss/loki/), though you can easily change the config to your liking.

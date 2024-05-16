@@ -1,0 +1,5 @@
+- name: Setup Promtail to send logs to a remote Loki instance
+  hosts: all
+  become: true
+  roles:
+    - ansible-promtail
