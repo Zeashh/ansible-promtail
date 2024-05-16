@@ -3,6 +3,11 @@
         path: /etc/apt/keyrings
         state: directory
 
+    - name: Make sure GPG is installed
+      ansible.builtin.apt:
+        package: gpg
+        update_cache: true
+
     - name: Install repository key
       ansible.builtin.shell: "wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor > /etc/apt/keyrings/grafana.gpg"
 
