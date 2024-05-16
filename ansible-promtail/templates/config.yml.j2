@@ -15,7 +15,7 @@ scrape_configs:
 - job_name: journal
   journal:
     max_age: 12h
-    path: /run/log/journal
+    path: /var/log/journal
     labels:
       job: "{{ ansible_hostname }}/journal"
   relabel_configs:
